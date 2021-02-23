@@ -1,6 +1,5 @@
 package org.example.rest;
 
-import com.google.gson.Gson;
 import org.example.rest.entities.City;
 import org.example.rest.entities.Roles;
 import org.example.rest.entities.User;
@@ -47,7 +46,7 @@ public class UserCreateTest extends EntityCreateTests {
         );
 
         mockMvc.perform(post("/user")
-                .content(new Gson().toJson(userData)))
+                .content(gson.toJson(userData)))
                 .andExpect(status().isCreated())
                 .andExpect(
                         header().string("Location", containsString("user/"))

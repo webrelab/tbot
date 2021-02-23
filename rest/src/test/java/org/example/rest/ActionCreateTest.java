@@ -1,7 +1,5 @@
 package org.example.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.example.rest.entities.Action;
 import org.example.rest.entities.City;
 import org.example.rest.repositories.ActionRepository;
@@ -48,8 +46,6 @@ public class ActionCreateTest extends EntityCreateTests {
                 new Date(),
                 new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000)
         );
-
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
 
         mockMvc.perform(post("/action")
                 .content(gson.toJson(action)))
