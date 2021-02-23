@@ -1,43 +1,61 @@
 package org.example.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.example.rest.entities.Action;
 import org.example.rest.entities.City;
+import org.example.rest.repositories.ActionRepository;
 import org.example.rest.repositories.CityRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CityCreateTest extends EntityCreateTests {
+public class ActionCreateTest extends EntityCreateTests {
     @Autowired
     private CityRepository cityRepository;
+
+    @Autowired
+    private ActionRepository actionRepository;
 
     @BeforeEach
     @AfterEach
     public void clearAll() {
+        actionRepository.deleteAll();
         cityRepository.deleteAll();
     }
 
     @Test
     public void shouldCreateEntity() throws Exception {
         final City city = new City(
-                "Новосибирск",
+                "Красноярск",
                 "ФО Сибирский",
-                1625631,
-                82.55,
-                55.01
+                1093771,
+                92.52,
+                56.00
+        );
+        final String cityId = cityRepository.save(city).getCityId();
+
+        final Action action = new Action(
+                cityId,
+                new Date(),
+                new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000)
         );
 
-        mockMvc.perform(post("/city")
-                .content(new Gson().toJson(city)))
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+
+        mockMvc.perform(post("/action")
+                .content(gson.toJson(action)))
                 .andExpect(status().isCreated())
                 .andExpect(
-                        header().string("Location", containsString("city/"))
+                        header().string("Location", containsString("action/"))
                 );
     }
 }
