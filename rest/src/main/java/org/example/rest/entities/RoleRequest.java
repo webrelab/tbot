@@ -29,7 +29,12 @@ public class RoleRequest {
     @Type(type = "text")
     private String roleRequestDescription;
 
-    public RoleRequest(String role, String userId, String roleRequestFilePath, String roleRequestDescription) {
+    public RoleRequest(
+            final String role,
+            final String userId,
+            final String roleRequestFilePath,
+            final String roleRequestDescription
+    ) {
         this.role = role;
         this.userId = userId;
         this.roleRequestFilePath = roleRequestFilePath;

@@ -30,7 +30,12 @@ public class CityGoal {
     @Temporal(TemporalType.DATE)
     private Date goalDestinationDate;
 
-    public CityGoal(String cityId, String goalName, String goalDescription, Date goalDestinationDate) {
+    public CityGoal(
+            final String cityId,
+            final String goalName,
+            final String goalDescription,
+            final Date goalDestinationDate
+    ) {
         this.cityId = cityId;
         this.goalName = goalName;
         this.goalDescription = goalDescription;

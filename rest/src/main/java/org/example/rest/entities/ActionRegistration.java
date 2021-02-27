@@ -27,7 +27,13 @@ public class ActionRegistration {
     private double actionRegistrationLat;
     private String cityId;
 
-    public ActionRegistration(String actionId, String userId, double actionRegistrationLon, double actionRegistrationLat, String cityId) {
+    public ActionRegistration(
+            final String actionId,
+            final String userId,
+            final double actionRegistrationLon,
+            final double actionRegistrationLat,
+            final String cityId
+    ) {
         this.actionId = actionId;
         this.userId = userId;
         this.actionRegistrationLon = actionRegistrationLon;

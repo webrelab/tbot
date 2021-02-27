@@ -24,7 +24,7 @@ public class ActionGoal {
     private String actionId;
     private String cityGoalId;
 
-    public ActionGoal(String actionId, String cityGoalId) {
+    public ActionGoal(final String actionId, final String cityGoalId) {
         this.actionId = actionId;
         this.cityGoalId = cityGoalId;
     }

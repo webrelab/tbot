@@ -27,7 +27,13 @@ public class City {
     private double cityLon;
     private double cityLat;
 
-    public City(String cityName, String federalDistrict, int population, double cityLon, double cityLat) {
+    public City(
+            final String cityName,
+            final String federalDistrict,
+            final int population,
+            final double cityLon,
+            final double cityLat
+    ) {
         this.cityName = cityName;
         this.federalDistrict = federalDistrict;
         this.population = population;

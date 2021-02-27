@@ -25,7 +25,7 @@ public class User {
     private String role;
     private String cityId;
 
-    public User(String chatId, String role, String cityId) {
+    public User(final String chatId, final String role, final String cityId) {
         this.chatId = chatId;
         this.role = role;
         this.cityId = cityId;

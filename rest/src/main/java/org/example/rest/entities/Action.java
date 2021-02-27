@@ -35,7 +35,11 @@ public class Action {
 
     private Date actionToTimestamp;
 
-    public Action(String cityId, Date actionFromTimestamp, Date actionToTimestamp) {
+    public Action(
+            final String cityId,
+            final Date actionFromTimestamp,
+            final Date actionToTimestamp
+    ) {
         this.cityId = cityId;
         this.actionFromTimestamp = actionFromTimestamp;
         this.actionToTimestamp = actionToTimestamp;
