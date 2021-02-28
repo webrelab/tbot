@@ -2,18 +2,18 @@ package org.example.rest.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "cities")
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Getter
-public class Cities {
+public class City {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -26,4 +26,18 @@ public class Cities {
     private int population;
     private double cityLon;
     private double cityLat;
+
+    public City(
+            final String cityName,
+            final String federalDistrict,
+            final int population,
+            final double cityLon,
+            final double cityLat
+    ) {
+        this.cityName = cityName;
+        this.federalDistrict = federalDistrict;
+        this.population = population;
+        this.cityLon = cityLon;
+        this.cityLat = cityLat;
+    }
 }
