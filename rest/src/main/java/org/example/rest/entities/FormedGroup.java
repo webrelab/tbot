@@ -3,16 +3,18 @@ package org.example.rest.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "formed_groups")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class FormedGroup {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -30,6 +32,13 @@ public class FormedGroup {
     private double formedGroupDestinationLocationLat;
     private String formedGroupDestinationAddress;
     private int formedGroupPeopleNumber;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "xref_formed_group_user",
+            joinColumns = @JoinColumn(name = "formed_group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> users = new HashSet<>();
 
     public FormedGroup(
             final String cityId,

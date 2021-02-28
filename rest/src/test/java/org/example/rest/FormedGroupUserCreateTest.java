@@ -10,19 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ActionRegistrationCreateTest extends EntityCreateTests{
-    @Autowired
-    private ActionRegistrationRepository actionRegistrationRepository;
-
+public class FormedGroupUserCreateTest extends EntityCreateTests {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private ActionRepository actionRepository;
+    private FormedGroupRepository formedGroupRepository;
 
     @Autowired
     private CityRepository cityRepository;
@@ -30,12 +27,15 @@ public class ActionRegistrationCreateTest extends EntityCreateTests{
     @Autowired
     private FunctionalRoleRepository functionalRoleRepository;
 
+    @Autowired
+    private ActionRepository actionRepository;
+
     @BeforeEach
     @AfterEach
     public void clearAll() {
-        actionRegistrationRepository.deleteAll();
-        actionRepository.deleteAll();
         userRepository.deleteAll();
+        formedGroupRepository.deleteAll();
+        actionRepository.deleteAll();
         functionalRoleRepository.deleteAll();
         cityRepository.deleteAll();
     }
@@ -57,35 +57,43 @@ public class ActionRegistrationCreateTest extends EntityCreateTests{
         );
         final String functionalRoleId =
                 functionalRoleRepository.save(functionalRole).getFunctionalRoleId();
-        final User userData = new User(
-                "6437658769",
-                Roles.RESIDENT.name(),
+        final User user = new User(
+                "847457969",
+                Roles.CITIZEN.name(),
                 functionalRoleId,
                 cityId
         );
-        final String userId = userRepository.save(userData).getUserId();
 
         final Action action = new Action(
                 cityId,
                 new Date(),
                 new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000)
         );
-
         final String actionId = actionRepository.save(action).getActionId();
 
-        final ActionRegistration actionRegistration = new ActionRegistration(
+        final FormedGroup formedGroup = new FormedGroup(
+                cityId,
                 actionId,
-                userId,
-                52.2453654,
-                54.34524324,
-                cityId
+                52.3434545,
+                52.3465345,
+                "Точка начала",
+                52.3434645,
+                52.3465645,
+                "Точка окончания",
+                520
         );
 
-        mockMvc.perform(post("/action-registration")
-                .content(gson.toJson(actionRegistration)))
-                .andExpect(status().isCreated())
+        formedGroup.getUsers().add(user);
+        final String formedGroupId =
+                formedGroupRepository.save(formedGroup).getFormedGroupId();
+
+        mockMvc.perform(
+                get("/formed-group/" + formedGroupId + "/users")
+        )
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(
-                        header().string("Location", containsString("action-registration/"))
+                        content().string(
+                                containsString(user.getUserId()))
                 );
     }
 }

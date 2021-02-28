@@ -1,7 +1,9 @@
 package org.example.rest;
 
 import org.example.rest.entities.*;
-import org.example.rest.repositories.*;
+import org.example.rest.repositories.CityRepository;
+import org.example.rest.repositories.FunctionalRoleRepository;
+import org.example.rest.repositories.VotingRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,28 +16,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ActionRegistrationCreateTest extends EntityCreateTests{
-    @Autowired
-    private ActionRegistrationRepository actionRegistrationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ActionRepository actionRepository;
-
+public class VotingCreateTest extends EntityCreateTests {
     @Autowired
     private CityRepository cityRepository;
 
     @Autowired
     private FunctionalRoleRepository functionalRoleRepository;
 
+    @Autowired
+    private VotingRepository votingRepository;
+
     @BeforeEach
     @AfterEach
-    public void clearAll() {
-        actionRegistrationRepository.deleteAll();
-        actionRepository.deleteAll();
-        userRepository.deleteAll();
+    public void clean() {
+        votingRepository.deleteAll();
         functionalRoleRepository.deleteAll();
         cityRepository.deleteAll();
     }
@@ -57,35 +51,27 @@ public class ActionRegistrationCreateTest extends EntityCreateTests{
         );
         final String functionalRoleId =
                 functionalRoleRepository.save(functionalRole).getFunctionalRoleId();
-        final User userData = new User(
-                "6437658769",
+        final Voting voting = new Voting(
+                cityId,
+                "h9h9v8h00fh034f0h",
+                VotingEntityTypes.CITY_GOAL.name(),
                 Roles.RESIDENT.name(),
                 functionalRoleId,
-                cityId
-        );
-        final String userId = userRepository.save(userData).getUserId();
-
-        final Action action = new Action(
-                cityId,
-                new Date(),
-                new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000)
+                new Date(System.currentTimeMillis() - 5 * 24 * 60 * 60 * 1000),
+                new Date(System.currentTimeMillis() + 5 * 24 * 60 * 60 * 1000),
+                3005,
+                103,
+                3208,
+                true
         );
 
-        final String actionId = actionRepository.save(action).getActionId();
-
-        final ActionRegistration actionRegistration = new ActionRegistration(
-                actionId,
-                userId,
-                52.2453654,
-                54.34524324,
-                cityId
-        );
-
-        mockMvc.perform(post("/action-registration")
-                .content(gson.toJson(actionRegistration)))
-                .andExpect(status().isCreated())
+        mockMvc.perform(
+                post("/voting")
+                        .content(gson.toJson(voting))
+        ).andExpect(status().isCreated())
                 .andExpect(
-                        header().string("Location", containsString("action-registration/"))
+                        header().string("Location", containsString(
+                                "/voting"))
                 );
     }
 }

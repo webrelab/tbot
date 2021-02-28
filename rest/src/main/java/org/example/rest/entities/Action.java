@@ -3,19 +3,19 @@ package org.example.rest.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "actions")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class Action {
 
     @Id
@@ -34,6 +34,16 @@ public class Action {
     @Temporal(TemporalType.TIMESTAMP)
 
     private Date actionToTimestamp;
+
+    @ManyToMany(cascade = {
+            CascadeType.ALL
+    })
+    @JoinTable(
+            name = "xref_action_goal",
+            joinColumns = @JoinColumn(name = "action_id"),
+            inverseJoinColumns = @JoinColumn(name = "city_goal_id")
+    )
+    private Set<CityGoal> cityGoals = new HashSet<>();
 
     public Action(
             final String cityId,
