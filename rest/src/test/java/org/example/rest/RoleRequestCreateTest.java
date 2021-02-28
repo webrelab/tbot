@@ -1,8 +1,10 @@
 package org.example.rest;
 
-import org.example.rest.entities.*;
+import org.example.rest.entities.City;
+import org.example.rest.entities.RoleRequest;
+import org.example.rest.entities.Roles;
+import org.example.rest.entities.User;
 import org.example.rest.repositories.CityRepository;
-import org.example.rest.repositories.FunctionalRoleRepository;
 import org.example.rest.repositories.RoleRequestRepository;
 import org.example.rest.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -25,15 +27,11 @@ public class RoleRequestCreateTest extends EntityCreateTests {
     @Autowired
     private CityRepository cityRepository;
 
-    @Autowired
-    private FunctionalRoleRepository functionalRoleRepository;
-
     @BeforeEach
     @AfterEach
     public void clearAll() {
         roleRequestRepository.deleteAll();
         userRepository.deleteAll();
-        functionalRoleRepository.deleteAll();
         cityRepository.deleteAll();
     }
 
@@ -47,17 +45,9 @@ public class RoleRequestCreateTest extends EntityCreateTests {
                 56.00
         );
         final String cityId = cityRepository.save(city).getCityId();
-        final FunctionalRole functionalRole = new FunctionalRole(
-                "Может просматривать контент",
-                "Описание",
-                "Условия получения"
-        );
-        final String functionalRoleId =
-                functionalRoleRepository.save(functionalRole).getFunctionalRoleId();
         final User userData = new User(
                 "6437658769",
                 Roles.RESIDENT.getRoleName(),
-                functionalRoleId,
                 cityId
         );
         final String userId = userRepository.save(userData).getUserId();

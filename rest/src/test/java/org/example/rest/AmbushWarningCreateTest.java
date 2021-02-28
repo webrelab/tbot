@@ -1,7 +1,13 @@
 package org.example.rest;
 
-import org.example.rest.entities.*;
-import org.example.rest.repositories.*;
+import org.example.rest.entities.Action;
+import org.example.rest.entities.AmbushWarning;
+import org.example.rest.entities.City;
+import org.example.rest.entities.FormedGroup;
+import org.example.rest.repositories.ActionRepository;
+import org.example.rest.repositories.AmbushWarningRepository;
+import org.example.rest.repositories.CityRepository;
+import org.example.rest.repositories.FormedGroupRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,27 +16,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class FormedGroupUserCreateTest extends EntityCreateTests {
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private FormedGroupRepository formedGroupRepository;
-
+public class AmbushWarningCreateTest extends EntityCreateTests {
     @Autowired
     private CityRepository cityRepository;
 
     @Autowired
     private ActionRepository actionRepository;
 
+    @Autowired
+    private FormedGroupRepository formedGroupRepository;
+
+    @Autowired
+    private AmbushWarningRepository ambushWarningRepository;
+
     @BeforeEach
     @AfterEach
     public void clearAll() {
-        userRepository.deleteAll();
+        ambushWarningRepository.deleteAll();
         formedGroupRepository.deleteAll();
         actionRepository.deleteAll();
         cityRepository.deleteAll();
@@ -46,17 +52,13 @@ public class FormedGroupUserCreateTest extends EntityCreateTests {
                 56.00
         );
         final String cityId = cityRepository.save(city).getCityId();
-        final User user = new User(
-                "847457969",
-                Roles.CITIZEN.name(),
-                cityId
-        );
 
         final Action action = new Action(
                 cityId,
                 new Date(),
                 new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000)
         );
+
         final String actionId = actionRepository.save(action).getActionId();
 
         final FormedGroup formedGroup = new FormedGroup(
@@ -70,18 +72,21 @@ public class FormedGroupUserCreateTest extends EntityCreateTests {
                 "Точка окончания",
                 520
         );
-
-        formedGroup.getUsers().add(user);
         final String formedGroupId =
                 formedGroupRepository.save(formedGroup).getFormedGroupId();
 
-        mockMvc.perform(
-                get("/formed-group/" + formedGroupId + "/users")
-        )
-                .andExpect(status().is2xxSuccessful())
+        final AmbushWarning ambushWarning = new AmbushWarning(
+                formedGroupId,
+                "Ленина 36",
+                52.3474564,
+                53.235343
+        );
+
+        mockMvc.perform(post("/ambush-warning")
+                                .content(gson.toJson(ambushWarning)))
+                .andExpect(status().isCreated())
                 .andExpect(
-                        content().string(
-                                containsString(user.getUserId()))
+                        header().string("Location", containsString("ambush-warning/"))
                 );
     }
 }

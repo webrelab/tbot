@@ -27,16 +27,12 @@ public class ActionRegistrationCreateTest extends EntityCreateTests{
     @Autowired
     private CityRepository cityRepository;
 
-    @Autowired
-    private FunctionalRoleRepository functionalRoleRepository;
-
     @BeforeEach
     @AfterEach
     public void clearAll() {
         actionRegistrationRepository.deleteAll();
         actionRepository.deleteAll();
         userRepository.deleteAll();
-        functionalRoleRepository.deleteAll();
         cityRepository.deleteAll();
     }
 
@@ -50,20 +46,12 @@ public class ActionRegistrationCreateTest extends EntityCreateTests{
                 56.00
         );
         final String cityId = cityRepository.save(city).getCityId();
-        final FunctionalRole functionalRole = new FunctionalRole(
-                "Может просматривать контент",
-                "Описание",
-                "Условия получения"
-        );
-        final String functionalRoleId =
-                functionalRoleRepository.save(functionalRole).getFunctionalRoleId();
-        final User userData = new User(
+        final User user = new User(
                 "6437658769",
                 Roles.RESIDENT.name(),
-                functionalRoleId,
                 cityId
         );
-        final String userId = userRepository.save(userData).getUserId();
+        final String userId = userRepository.save(user).getUserId();
 
         final Action action = new Action(
                 cityId,

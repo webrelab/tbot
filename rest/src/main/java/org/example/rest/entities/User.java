@@ -25,7 +25,6 @@ public class User {
     private String userId;
     private String chatId;
     private String role;
-    private String functional_role_id;
     private String cityId;
 
     @ManyToMany(
@@ -34,13 +33,18 @@ public class User {
     )
     private Set<FormedGroup> formedGroups = new HashSet<>();
 
+    @ManyToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "users"
+    )
+    private Set<FunctionalRole> functionalRoles = new HashSet<>();
+
     public User(
-            final String chatId, final String role, final String functional_role_id,
+            final String chatId, final String role,
             final String cityId
     ) {
         this.chatId = chatId;
         this.role = role;
-        this.functional_role_id = functional_role_id;
         this.cityId = cityId;
     }
 }

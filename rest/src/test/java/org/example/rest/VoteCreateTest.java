@@ -60,7 +60,6 @@ public class VoteCreateTest extends EntityCreateTests {
         final User user = new User(
                 "847457969",
                 Roles.CITIZEN.name(),
-                functionalRoleId,
                 cityId
         );
         final String userId = userRepository.save(user).getUserId();

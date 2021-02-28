@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "functional_roles")
 @AllArgsConstructor
@@ -26,6 +26,15 @@ public class FunctionalRole {
     private String functionalRoleName;
     private String functionalRoleDescription;
     private String functionalRoleGetCondition;
+    @ManyToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinTable(
+            name = "xref_functional_role_user",
+            joinColumns = @JoinColumn(name = "functional_role_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> users = new HashSet<>();
 
     public FunctionalRole(
             final String functionalRoleName, final String functionalRoleDescription,
