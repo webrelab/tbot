@@ -1,16 +1,21 @@
 package org.tbot.bot;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Token {
-    private final static String PRIVATE_URI = "target/classes/private";
+    private final static String PRIVATE_URI = Objects.requireNonNull(
+            Token.class.getClassLoader().getResource(
+                    "private")).getFile();
     public final static String TOKEN;
     public final static String NAME;
 
@@ -30,7 +35,14 @@ public class Token {
                                          row -> row.split("=", 2)[1].trim()
                                  )
                 );
-        TOKEN = data.get("token");
-        NAME = data.get("name");
+        TOKEN = decode(data.get("token"));
+        NAME = decode(data.get("name"));
+    }
+
+    private static String decode(final String encoded) {
+        return new String(
+                Base64.getDecoder().decode(encoded),
+                StandardCharsets.UTF_8
+        ).trim();
     }
 }
