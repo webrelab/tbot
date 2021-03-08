@@ -2,9 +2,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    generate-ddl: true
+    show-sql: true
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/tbotdb
     username: tbotdb
     password: tbotdb
+    initialization-mode: always
