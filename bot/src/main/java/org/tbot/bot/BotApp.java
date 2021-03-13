@@ -38,11 +38,11 @@ public class BotApp extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return Token.NAME;
+        return Secret.BOT_NAME;
     }
 
     @Override
     public String getBotToken() {
-        return Token.TOKEN;
+        return Secret.BOT_TOKEN;
     }
 }

@@ -12,12 +12,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Token {
+public class Secret {
     private final static String PRIVATE_URI = Objects.requireNonNull(
-            Token.class.getClassLoader().getResource(
+            Secret.class.getClassLoader().getResource(
                     "private")).getFile();
-    public final static String TOKEN;
-    public final static String NAME;
+    public final static String BOT_TOKEN;
+    public final static String BOT_NAME;
+    public final static String DADATA_API_KEY;
 
     static {
         final Path path = Paths.get(PRIVATE_URI);
@@ -35,8 +36,9 @@ public class Token {
                                          row -> row.split("=", 2)[1].trim()
                                  )
                 );
-        TOKEN = decode(data.get("token"));
-        NAME = decode(data.get("name"));
+        BOT_TOKEN = decode(data.get("token"));
+        BOT_NAME = decode(data.get("name"));
+        DADATA_API_KEY = decode(data.get("dadata.api"));
     }
 
     private static String decode(final String encoded) {

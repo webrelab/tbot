@@ -128,7 +128,7 @@ public class RestRequest {
         execute(httpClient, builder.build());
     }
 
-    private static HttpResponse execute(final CloseableHttpClient httpClient,
+    public static HttpResponse execute(final CloseableHttpClient httpClient,
             final HttpUriRequest request) {
         final HttpResponse response;
         try {
@@ -179,7 +179,7 @@ public class RestRequest {
         return output.toString();
     }
 
-    private static String getResponseContent(final HttpResponse response) {
+    public static String getResponseContent(final HttpResponse response) {
         final StringWriter writer = new StringWriter();
         try {
             IOUtils.copy(response.getEntity().getContent(), writer, StandardCharsets.UTF_8);
