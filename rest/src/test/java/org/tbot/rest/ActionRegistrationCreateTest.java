@@ -1,11 +1,8 @@
 package org.tbot.rest;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tbot.rest.entities.*;
-import org.tbot.rest.repositories.ActionRegistrationRepository;
 import org.tbot.rest.repositories.ActionRepository;
 import org.tbot.rest.repositories.CityRepository;
 import org.tbot.rest.repositories.UserRepository;
@@ -18,8 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ActionRegistrationCreateTest extends EntityCreateTests{
-    @Autowired
-    private ActionRegistrationRepository actionRegistrationRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -30,27 +25,19 @@ public class ActionRegistrationCreateTest extends EntityCreateTests{
     @Autowired
     private CityRepository cityRepository;
 
-    @BeforeEach
-    @AfterEach
-    public void clearAll() {
-        actionRegistrationRepository.deleteAll();
-        actionRepository.deleteAll();
-        userRepository.deleteAll();
-        cityRepository.deleteAll();
-    }
-
     @Test
     public void shouldCreateEntity() throws Exception {
         final City city = new City(
-                "Красноярск",
-                "ФО Сибирский",
-                1093771,
-                92.52,
-                56.00
+                faker.address().cityName(),
+                faker.address().state(),
+                faker.address().state(),
+                faker.number().numberBetween(50000, 1500000),
+                faker.number().randomDouble(6, -100, 100),
+                faker.number().randomDouble(6, -100, 100)
         );
         final String cityId = cityRepository.save(city).getCityId();
         final User user = new User(
-                "6437658769",
+                String.valueOf(faker.number().randomNumber(8, true)),
                 Roles.RESIDENT.name(),
                 cityId
         );

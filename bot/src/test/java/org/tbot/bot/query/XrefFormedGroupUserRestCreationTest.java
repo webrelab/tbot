@@ -19,23 +19,27 @@ public class XrefFormedGroupUserRestCreationTest extends EntityRestCreationTest 
         final City city = new City(
                 faker.address().cityName(),
                 faker.address().state(),
+                faker.address().state(),
                 faker.number().numberBetween(300000, 1800000),
                 faker.number().randomDouble(5, -180, 180),
                 faker.number().randomDouble(5, -180, 180)
         );
-        final String cityId = RestRequest.post(CityRepository.class, city);
+        final String cityId = RestRequest.post(CityRepository.class, city)
+                .orElseThrow(HTTPError::new);
         final User user = new User(
                 String.valueOf(faker.number().randomNumber(10, true)),
                 Roles.RESIDENT.name(),
                 cityId
         );
-        userId = RestRequest.post(UserRepository.class, user);
+        userId = RestRequest.post(UserRepository.class, user)
+                .orElseThrow(HTTPError::new);
         final Action action = new Action(
                 cityId,
                 new Date(),
                 new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000)
         );
-        final String actionId = RestRequest.post(ActionRepository.class, action);
+        final String actionId = RestRequest.post(ActionRepository.class, action)
+                .orElseThrow(HTTPError::new);
         final FormedGroup formedGroup = new FormedGroup(
                 cityId,
                 actionId,
@@ -47,7 +51,8 @@ public class XrefFormedGroupUserRestCreationTest extends EntityRestCreationTest 
                 faker.address().fullAddress(),
                 faker.number().numberBetween(300, 800)
         );
-        formedGroupId = RestRequest.post(FormedGroupRepository.class, formedGroup);
+        formedGroupId = RestRequest.post(FormedGroupRepository.class, formedGroup)
+                .orElseThrow(HTTPError::new);
     }
     @Test
     public void referenceEntitiesTest() {
@@ -58,14 +63,14 @@ public class XrefFormedGroupUserRestCreationTest extends EntityRestCreationTest 
                 formedGroupId,
                 FormedGroup.getUserRelationName(),
                 userId
-        );
+        ).orElseThrow(HTTPError::new);
         final FormedGroup getFormedGroup = RestRequest.get(
                 UserRepository.class,
                 FormedGroup.class,
                 userId,
                 User.getFormedGroupRelationName(),
                 formedGroupId
-        );
+        ).orElseThrow(HTTPError::new);
         Assert.assertNotNull(getUser);
         Assert.assertNotNull(getFormedGroup);
     }

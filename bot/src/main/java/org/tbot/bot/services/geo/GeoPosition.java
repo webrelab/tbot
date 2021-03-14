@@ -3,7 +3,7 @@ package org.tbot.bot.services.geo;
 import com.google.common.net.MediaType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.RequestBuilder;
@@ -11,9 +11,13 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.tbot.bot.Secret;
+import org.tbot.bot.query.HTTPError;
 import org.tbot.bot.query.RestRequest;
+import org.tbot.bot.services.resources.ResourceLoader;
+import org.tbot.rest.entities.City;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * Сервис реализует возможность создания объекта геопозиции по широте и долготе.
@@ -55,6 +59,26 @@ public class GeoPosition {
         return addressList.get(0).getAsJsonObject().getAsJsonPrimitive("value").getAsString();
     }
 
+    public String getArea() {
+        return addressList.get(0).getAsJsonObject().getAsJsonObject("data").getAsJsonPrimitive("region").getAsString();
+    }
+
+    public String getFederalDistrict() {
+        return addressList.get(0).getAsJsonObject().getAsJsonObject("data").getAsJsonPrimitive("federal_district").getAsString();
+    }
+
+    public City createCityEntity() {
+        final Optional<String> population = ResourceLoader.get(ResourceLoader.Res.POPULATION, getCity());
+        return new City(
+                getCity(),
+                getArea(),
+                getFederalDistrict(),
+                population.map(Integer::parseInt).orElse(-1),
+                lon,
+                lat
+        );
+    }
+
     private void request() {
         final CloseableHttpClient client = HttpClients.createDefault();
         final RequestBuilder builder = RequestBuilder.post(REQUEST_URL);
@@ -62,10 +86,9 @@ public class GeoPosition {
                 .addHeader(HttpHeaders.ACCEPT, MediaType.JSON_UTF_8.toString())
                 .addHeader(HttpHeaders.AUTHORIZATION, "Token " + Secret.DADATA_API_KEY)
                 .setEntity(new StringEntity(getQuery(), StandardCharsets.UTF_8));
-        final HttpResponse response = RestRequest.execute(client, builder.build());
-        final String content = RestRequest.getResponseContent(response);
-        final JsonParser parser = new JsonParser();
-        addressList = parser.parse(content).getAsJsonObject().getAsJsonArray("suggestions");
+        final Optional<HttpResponse> response = RestRequest.execute(client, builder.build());
+        final JsonElement jsonElement = RestRequest.getResponseContent(response.orElseThrow(HTTPError::new));
+        addressList = jsonElement.getAsJsonObject().getAsJsonArray("suggestions");
     }
 
     private String getQuery() {

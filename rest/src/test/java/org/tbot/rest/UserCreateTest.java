@@ -1,14 +1,11 @@
 package org.tbot.rest;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.tbot.rest.entities.City;
 import org.tbot.rest.entities.Roles;
 import org.tbot.rest.entities.User;
 import org.tbot.rest.repositories.CityRepository;
-import org.tbot.rest.repositories.UserRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,28 +16,19 @@ public class UserCreateTest extends EntityCreateTests {
     @Autowired
     private CityRepository cityRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @BeforeEach
-    @AfterEach
-    public void clearAll() {
-        userRepository.deleteAll();
-        cityRepository.deleteAll();
-    }
-
     @Test
     public void shouldCreateEntity() throws Exception {
         final City city = new City(
-                "Красноярск",
-                "ФО Сибирский",
-                1093771,
-                92.52,
-                56.00
+                faker.address().cityName(),
+                faker.address().state(),
+                faker.address().state(),
+                faker.number().numberBetween(50000, 1500000),
+                faker.number().randomDouble(6, -100, 100),
+                faker.number().randomDouble(6, -100, 100)
         );
         final String cityId = cityRepository.save(city).getCityId();
         final User userData = new User(
-                "847457969",
+                String.valueOf(faker.number().randomNumber(8, true)),
                 Roles.CITIZEN.name(),
                 cityId
         );

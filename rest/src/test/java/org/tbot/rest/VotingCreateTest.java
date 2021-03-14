@@ -1,13 +1,10 @@
 package org.tbot.rest;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tbot.rest.entities.*;
 import org.tbot.rest.repositories.CityRepository;
 import org.tbot.rest.repositories.FunctionalRoleRepository;
-import org.tbot.rest.repositories.VotingRepository;
 
 import java.util.Date;
 
@@ -23,25 +20,15 @@ public class VotingCreateTest extends EntityCreateTests {
     @Autowired
     private FunctionalRoleRepository functionalRoleRepository;
 
-    @Autowired
-    private VotingRepository votingRepository;
-
-    @BeforeEach
-    @AfterEach
-    public void clean() {
-        votingRepository.deleteAll();
-        functionalRoleRepository.deleteAll();
-        cityRepository.deleteAll();
-    }
-
     @Test
     public void shouldCreateEntity() throws Exception {
         final City city = new City(
-                "Красноярск",
-                "ФО Сибирский",
-                1093771,
-                92.52,
-                56.00
+                faker.address().cityName(),
+                faker.address().state(),
+                faker.address().state(),
+                faker.number().numberBetween(50000, 1500000),
+                faker.number().randomDouble(6, -100, 100),
+                faker.number().randomDouble(6, -100, 100)
         );
         final String cityId = cityRepository.save(city).getCityId();
         final FunctionalRole functionalRole = new FunctionalRole(

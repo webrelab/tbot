@@ -1,15 +1,12 @@
 package org.tbot.rest;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.tbot.rest.entities.Action;
 import org.tbot.rest.entities.City;
 import org.tbot.rest.entities.FormedGroup;
 import org.tbot.rest.repositories.ActionRepository;
 import org.tbot.rest.repositories.CityRepository;
-import org.tbot.rest.repositories.FormedGroupRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -25,25 +22,15 @@ public class FormedGroupCreateTest extends EntityCreateTests {
     @Autowired
     private ActionRepository actionRepository;
 
-    @Autowired
-    private FormedGroupRepository formedGroupRepository;
-
-    @BeforeEach
-    @AfterEach
-    public void clearAll() {
-        formedGroupRepository.deleteAll();
-        actionRepository.deleteAll();
-        cityRepository.deleteAll();
-    }
-
     @Test
     public void shouldCreateEntity() throws Exception {
         final City city = new City(
-                "Красноярск",
-                "ФО Сибирский",
-                1093771,
-                92.52,
-                56.00
+                faker.address().cityName(),
+                faker.address().state(),
+                faker.address().state(),
+                faker.number().numberBetween(50000, 1500000),
+                faker.number().randomDouble(6, -100, 100),
+                faker.number().randomDouble(6, -100, 100)
         );
         final String cityId = cityRepository.save(city).getCityId();
 
